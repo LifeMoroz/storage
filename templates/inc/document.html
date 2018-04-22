@@ -1,0 +1,15 @@
+<div class="col-3 facultet">
+    <div class="card">
+        <div class="card-header">
+            <h6 class="document-title">{{ object.title }}</h6>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ object.course }}</p>
+            <p>Источник: {{ object.author.get_full_name }}</p>
+            <p>Дата добавления:&nbsp;{{ object.created|date:"SHORT_DATE_FORMAT" }}</p>
+            <a href="#" class="btn btn-outline-danger" onclick="$.get('{% url 'main:favorites-remove' object.id %}')">Удалить из &star;</a>
+            <br><br>
+            <a href="#" class="btn btn-outline-primary">Скачать</a>
+        </div>
+    </div>
+</div>

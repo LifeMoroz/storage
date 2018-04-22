@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+
+<body class="bg-white">
+  <div class="container">
+    <div class="card card-login mx-auto mt-5">
+      <div class="card-header">Авторизация</div>
+      <div class="card-body">
+        <form action="{% url 'main:signin' %}" method="post">
+            {{ form.non_field_errors }}
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    <label class="control-label col-xs-3" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">Вход</button>
+        </form>
+        <div class="text-center">
+          <a class="d-block small mt-3" href="{% url 'main:signup' %}">Форма регистрации</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+{% endblock %}

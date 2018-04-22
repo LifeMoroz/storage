@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+    <div class="container bott">
+        <div class="row">
+            <div class="col-12">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">{{ object.specialization.department }}</li>
+                    <li class="breadcrumb-item">{{ object.specialization }}</li>
+                    <li class="breadcrumb-item">{{ object.title }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            {% for object in document_list %}
+                {% include 'inc/document.html' %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

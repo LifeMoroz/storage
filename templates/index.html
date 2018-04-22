@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+    <body>
+
+        {% include 'inc/search.html' %}
+        <!-- Карточка предмета -->
+        <div class="container">
+            <div class="row">
+                {% for object in object_list %}
+                    {% include 'inc/card_with_pic.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+{% endblock %}

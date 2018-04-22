@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+    <script>
+    var active_course;
+    function select_specialization(o, _id) {
+        $('.specialization').removeClass('active');
+        $(o).addClass('active');
+        $('.courses').hide();
+        $('#spec_' + _id).show();
+        active_course = null;
+    }
+    function activate_course(o, _id) {
+        $('.course').removeClass('active');
+        $(o).addClass('active');
+        active_course = _id;
+    }
+    function go_to_documents() {
+        if (active_course) {
+            document.location.replace('/course/' + active_course + '/')
+        }
+    }
+    </script>
+    <div class="container">
+        <div class="row">
+            <div class="col-6 facultet">
+				<div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Кафедра</h5>
+                    </div>
+                    <div>
+                        {% for object in specialization_list %}
+                        <ul class="list-group" >
+                            <li class="specialization list-group-item" onclick="select_specialization(this, {{ object.id }})">{{ object }}</li>
+                        </ul>
+                        {% endfor %}
+					</div>
+				</div>
+			</div>
+            {% for specialition in specialization_list %}
+            <div class="col-6 facultet courses" id="spec_{{ specialition.id }}" style="display: none;">
+				<div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Учебная дисциплина</h5>
+                    </div>
+                    {% for course in specialition.course_set.all %}
+					<div>
+                        <ul class="list-group">
+                            <li class="list-group-item course" onclick="activate_course(this, {{ course.id }})">Предмет 1</li>
+                        </ul>
+					</div>
+                    {% endfor %}
+				</div>
+			</div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <a class="btn btn-primary" href="#" onclick="go_to_documents()" role="button">Перейти</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
