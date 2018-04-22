@@ -82,6 +82,7 @@ class Index(TemplateView):
 
 class FavoritesRemove(View):
     def get(self, request, fid):
+        # TODO: favorites
         return JsonResponse({}, status=200)
 
 
