@@ -3,12 +3,12 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.http import JsonResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import TemplateView, DetailView, ListView
 
 from app.main.forms import SignUpForm, SignInForm
-from app.main.models import Specialization, Department, Document, Course
+from app.main.models import Department, Document, Course
 
 
 class SignOut(View):
@@ -18,7 +18,7 @@ class SignOut(View):
 
 
 class SignUp(TemplateView):
-    template_name = 'signup.html'
+    template_name = 'auth/signup.html'
 
     def get_context_data(self, **kwargs):
         return {'form': SignUpForm()}
@@ -40,7 +40,7 @@ class SignUp(TemplateView):
 
 
 class SignIn(TemplateView):
-    template_name = 'login.html'
+    template_name = 'auth/login.html'
 
     def get_context_data(self, **kwargs):
         return {'form': SignInForm()}
