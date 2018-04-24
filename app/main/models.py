@@ -48,9 +48,12 @@ class Course(models.Model):
 class Document(models.Model):
     title = models.CharField('Название', max_length=255)
     file = models.FileField(verbose_name='Файл')
+    TYPE_CHOICES = ((1, 'Шаблон работы'), (2, 'Методичекие указания'), (3, 'Видеофайл'), (4, 'Домашнее задание'))
+    type = models.IntegerField(verbose_name='Тип файла', choices=TYPE_CHOICES)
     author = models.ForeignKey(User, models.CASCADE, verbose_name='Автор')
     course = models.ForeignKey(Course, models.CASCADE, verbose_name='Предмет')
     created = models.DateTimeField(verbose_name='Создано', default=timezone.now, editable=False)
+    users = models.ManyToManyField(User, related_name='favorites')
 
     class Meta:
         verbose_name = 'Документ'

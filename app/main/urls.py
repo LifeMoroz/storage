@@ -1,8 +1,6 @@
 from django.urls import path, re_path
 
-from app.main import legacy_views
 from . import views
-
 
 app_name = 'main'
 
@@ -14,8 +12,9 @@ urlpatterns = [
     re_path('search/', views.Search.as_view(), name='search'),
     re_path('storage/(?P<pk>\d+)', views.Storage.as_view(), name="storage"),
     re_path('course/(?P<pk>\d+)', views.CourseDetail.as_view(), name="course"),
-    # path('files/', views.files, name="files"),
-    # path('load/', views.load, name="load"),
+    path('favorite/', views.Favorites.as_view(), name="favorites"),
+    path('load/', views.FileUpload.as_view(), name="upload"),
 
-    re_path('favorites/remove/(?P<fid>\d+)/', views.FavoritesRemove.as_view(), name='favorites-remove'),
+    re_path('favorites/remove/(?P<document_id>\d+)/', views.FavoritesRemove.as_view(), name='favorites-remove'),
+    re_path('favorites/add/(?P<document_id>\d+)/', views.FavoritesAdd.as_view(), name='favorites-add'),
 ]

@@ -2,13 +2,20 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.core.exceptions import NON_FIELD_ERRORS
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import TemplateView, DetailView, ListView
 
-from app.main.forms import SignUpForm, SignInForm
+from app.main.forms import SignUpForm, SignInForm, FileUploadForm
 from app.main.models import Department, Document, Course
+
+
+class LoginRequired:
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('main:signin')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class SignOut(View):
@@ -24,8 +31,6 @@ class SignUp(TemplateView):
         return {'form': SignUpForm()}
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('main:index')
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request):
@@ -70,7 +75,7 @@ class SignIn(TemplateView):
         return self.render_to_response({'form': form})
 
 
-class Index(TemplateView):
+class Index(LoginRequired, TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
@@ -80,13 +85,7 @@ class Index(TemplateView):
         }
 
 
-class FavoritesRemove(View):
-    def get(self, request, fid):
-        # TODO: favorites
-        return JsonResponse({}, status=200)
-
-
-class Search(ListView):
+class Search(LoginRequired, ListView):
     template_name = 'search.html'
     queryset = Document.objects
 
@@ -100,7 +99,7 @@ class Search(ListView):
         return data
 
 
-class Storage(DetailView):
+class Storage(LoginRequired, DetailView):
     template_name = 'storage.html'
     queryset = Department.objects
 
@@ -111,7 +110,7 @@ class Storage(DetailView):
         }
 
 
-class CourseDetail(DetailView):
+class CourseDetail(LoginRequired, DetailView):
     template_name = 'files.html'
     queryset = Course.objects
 
@@ -121,3 +120,55 @@ class CourseDetail(DetailView):
             'document_list': Document.objects.filter(course=self.object),
             'title': "Файлы факультета {}".format(self.object)
         }
+
+
+class Favorites(LoginRequired, ListView):
+    template_name = 'favorites.html'
+
+    def get_queryset(self):
+        return self.request.user.favorites.all()
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['title'] = "Избранное"
+        return data
+
+
+class FavoritesRemove(View):
+    def get(self, request, document_id):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        try:
+            document = Document.objects.get(id=document_id)
+        except Document.DoesNotExist:
+            raise Http404
+        request.user.favorites.remove(document)
+        return JsonResponse({}, status=200)
+
+
+class FavoritesAdd(View):
+    def get(self, request, document_id):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        try:
+            document = Document.objects.get(id=document_id)
+        except Document.DoesNotExist:
+            raise Http404
+        request.user.favorites.add(document)
+        return JsonResponse({}, status=200)
+
+
+class FileUpload(TemplateView):
+    template_name = 'load.html'
+
+    def get_context_data(self, **kwargs):
+        return {'form': FileUploadForm()}
+
+    def post(self, request):
+        form = FileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            doc = form.save(False)
+            doc.author = request.user
+            doc.save()
+            return self.render_to_response({'form': form, 'success': True})
+        return self.render_to_response({'form': form})

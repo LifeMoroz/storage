@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ImproperlyConfigured
 
 from app.main.constants import Position
+from app.main.models import Document, Course
 
 
 class SignUpForm(UserCreationForm):
@@ -38,12 +39,12 @@ class SignUpForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(False)
-        # if self.cleaned_data['position'] == Position.TEACHER:
-        #     user.groups.add(Group.objects.get(name='Преподаватели'))
-        # elif self.cleaned_data['position'] == Position.STUDENT:
-        #     user.groups.add(Group.objects.get(name='Студенты'))
-        # else:
-        #     raise ImproperlyConfigured('Unsupported group')
+        if self.cleaned_data['position'] == Position.TEACHER:
+            user.groups.add(Group.objects.get(name='Преподаватели'))
+        elif self.cleaned_data['position'] == Position.STUDENT:
+            user.groups.add(Group.objects.get(name='Студенты'))
+        else:
+            raise ImproperlyConfigured('Unsupported group')
         if commit:
             user.save()
         return user
@@ -67,3 +68,24 @@ class SignInForm(forms.ModelForm):
         model = User
         fields = ('email', 'password')
 
+
+class FileUploadForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Название файла',
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
+    )
+    type = forms.ChoiceField(
+        label='Тип файла',
+        choices=((None, '---------'),) + Document.TYPE_CHOICES,
+        widget=forms.widgets.Select(attrs={'class': 'custom-select'}),
+        initial=None
+    )
+    course = forms.ModelChoiceField(
+        queryset=Course.objects.all(),
+        label='Предмет',
+        widget=forms.widgets.Select(attrs={'class': 'custom-select'})
+    )
+
+    class Meta:
+        model = Document
+        exclude = ('users', 'author')

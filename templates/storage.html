@@ -46,7 +46,7 @@
                     {% for course in specialition.course_set.all %}
 					<div>
                         <ul class="list-group">
-                            <li class="list-group-item course" onclick="activate_course(this, {{ course.id }})">Предмет 1</li>
+                            <li class="list-group-item course" onclick="activate_course(this, {{ course.id }})">{{ course.title }}</li>
                         </ul>
 					</div>
                     {% endfor %}

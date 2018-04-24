@@ -16,9 +16,16 @@
 
     <div class="container">
         <div class="row">
+        {% if document_list %}
             {% for object in document_list %}
                 {% include 'inc/document.html' %}
             {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <h4>К сожалению здесь ещё нет материалов. Попробуйте ппросмотреть другой предмет.</h4>
+            </div>
+        {% endif %}
         </div>
+
     </div>
 {% endblock %}
