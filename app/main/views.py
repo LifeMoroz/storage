@@ -161,6 +161,11 @@ class FavoritesAdd(View):
 class FileUpload(TemplateView):
     template_name = 'load.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or request.user.groups.first().name != 'Преподаватели':
+            return redirect('main:index')
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         return {'form': FileUploadForm()}
 
