@@ -1,7 +1,10 @@
 function remove_from_favorites() {
     var parent = $(this).parent().parent().parent();
-    parent.parent().append("<div class=\"col-12\"><br /><h4>Вы ещё не делали закладок.</h4></div>");
+    var container = parent.parent();
     parent.remove();
+    if ($('.card').length == 0) {
+        container.append("<div class=\"col-12\"><br /><h4>Вы ещё не делали закладок.</h4></div>");
+    }
 }
 
 function toggle_favorite(_this) {

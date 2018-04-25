@@ -21,7 +21,7 @@ class LoginRequired:
 class SignOut(View):
     def get(self, request, *args, **kwargs):
         logout(request)
-        return redirect('index:main')
+        return redirect('main:index')
 
 
 class SignUp(TemplateView):
@@ -40,7 +40,7 @@ class SignUp(TemplateView):
             user.username = user.email
             user.save()
             login(request, user)
-            return redirect('index:main')
+            return redirect('main:index')
         return self.render_to_response({'form': form})
 
 

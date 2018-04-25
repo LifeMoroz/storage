@@ -38,15 +38,14 @@ class SignUpForm(UserCreationForm):
         return self.cleaned_data['position']
 
     def save(self, commit=True):
-        user = super().save(False)
+        user = super().save(True)
         if self.cleaned_data['position'] == Position.TEACHER:
             user.groups.add(Group.objects.get(name='Преподаватели'))
         elif self.cleaned_data['position'] == Position.STUDENT:
             user.groups.add(Group.objects.get(name='Студенты'))
         else:
+            user.delete()
             raise ImproperlyConfigured('Unsupported group')
-        if commit:
-            user.save()
         return user
 
     class Meta:
