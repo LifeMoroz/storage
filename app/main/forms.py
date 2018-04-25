@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ImproperlyConfigured
 
 from app.main.constants import Position
-from app.main.models import Document, Course
+from app.main.models import Document, Course, Type
 
 
 class SignUpForm(UserCreationForm):
@@ -73,11 +73,10 @@ class FileUploadForm(forms.ModelForm):
         label='Название файла',
         widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
     )
-    type = forms.ChoiceField(
+    type = forms.ModelChoiceField(
+        queryset=Type.objects.all(),
         label='Тип файла',
-        choices=((None, '---------'),) + Document.TYPE_CHOICES,
         widget=forms.widgets.Select(attrs={'class': 'custom-select'}),
-        initial=None
     )
     course = forms.ModelChoiceField(
         queryset=Course.objects.all(),
