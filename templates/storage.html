@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block content %}
+    <style>
+    .button-container {
+        display: none;
+    }
+    </style>
     <script>
     var active_course;
     function select_specialization(o, _id) {
@@ -8,11 +13,16 @@
         $(o).addClass('active');
         $('.courses').hide();
         $('#spec_' + _id).show();
+        console.log($(o).children('.card'));
+        if ($('#spec_' + _id).children('.card').length == 0) {
+            $('.button-container').hide();
+        }
         active_course = null;
     }
     function activate_course(o, _id) {
         $('.course').removeClass('active');
         $(o).addClass('active');
+        $('.button-container').show();
         active_course = _id;
     }
     function go_to_documents() {
@@ -68,7 +78,7 @@
 
 
     {% if specialization_list %}
-    <div class="container">
+    <div class="container button-container">
         <div class="row">
             <div class="col-12">
                 <a class="btn btn-primary" href="#" onclick="go_to_documents()" role="button">Перейти</a>
