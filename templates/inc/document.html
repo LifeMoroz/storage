@@ -5,6 +5,7 @@
         </div>
         <div class="card-body">
             <p class="card-text">{{ object.course }}</p>
+            <p>Тип Файла: {{ object.author.get_full_name }}</p>
             <p>Источник: {{ object.author.get_full_name }}</p>
             <p>Дата добавления:&nbsp;{{ object.created|date:"SHORT_DATE_FORMAT" }}</p>
             <a href="#" class="btn btn-outline-danger favorites-remove"{% if object not in request.user.favorites.all %} style="display: none"{% endif %} onclick="$.get('{% url 'main:favorites-remove' object.id %}'); toggle_favorite(this);">Удалить из &star;</a>

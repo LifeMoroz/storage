@@ -90,12 +90,24 @@ class Search(LoginRequired, ListView):
     queryset = Document.objects
 
     def get_queryset(self):
-        return self.queryset.filter(title__contains=self.request.GET.get('q', ''))
+        if self.request.GET.get('q', ''):
+            return self.queryset.filter(title__contains=self.request.GET.get('q', ''))
+        return self.queryset.none()
 
     def get_context_data(self, *args, object_list=None, **kwargs):
-        data = super().get_context_data(object_list=None, **kwargs)
+        data = super().get_context_data(object_list=object_list, **kwargs)
         data['query'] = self.request.GET.get('q', '')
         data['title'] = "Результаты поиска"
+        return data
+
+
+class AllFiles(LoginRequired, ListView):
+    template_name = 'search.html'
+    queryset = Document.objects.all()
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        data = super().get_context_data(object_list=object_list, **kwargs)
+        data['title'] = "Все файлы"
         return data
 
 

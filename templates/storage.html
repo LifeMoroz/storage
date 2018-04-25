@@ -23,6 +23,7 @@
     </script>
     <div class="container">
         <div class="row">
+            {% if specialization_list %}
             <div class="col-6 facultet">
 				<div class="card">
                     <div class="card-header">
@@ -39,6 +40,7 @@
 			</div>
             {% for specialition in specialization_list %}
             <div class="col-6 facultet courses" id="spec_{{ specialition.id }}" style="display: none;">
+                {% if specialization_list %}
 				<div class="card">
                     <div class="card-header">
                         <h5 class="card-title">Учебная дисциплина</h5>
@@ -51,8 +53,15 @@
 					</div>
                     {% endfor %}
 				</div>
+                {% else %}
+                <h4>К сожалению, данный раздел еще не наполнен</h4>
+                {% endif %}
 			</div>
             {% endfor %}
+            {% else %}
+                <br>
+                <h4>К сожалению, данный раздел еще не наполнен</h4>
+            {% endif %}
         </div>
     </div>
 

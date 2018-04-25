@@ -55,6 +55,9 @@ class Document(models.Model):
     created = models.DateTimeField(verbose_name='Создано', default=timezone.now, editable=False)
     users = models.ManyToManyField(User, related_name='favorites')
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         verbose_name = 'Документ'
         verbose_name_plural = 'Документы'

@@ -2,25 +2,30 @@
 {% load staticfiles %}
 {% block content %}
 
-    <div class="container input-group search">
-        <input type="text" class="form-control" placeholder="Введите название файла" aria-label="Введите название файла" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-            <button class="btn btn-outline-primary" type="button">Искать</button>
-        </div>
-    </div>
+    {% include 'inc/search.html' %}
 
     <div class="container bott">
         <div class="row">
         {% if object_list %}
+            {% if query %}
             <div class="col-12">
                 <h4>Результаты поиска по разпросу "{{ query }}":</h4>
             </div>
+            {% endif %}
             {% for object in object_list %}
                 {% include 'inc/document.html' %}
             {% endfor %}
+        {% elif query == '' %}
+            <div class="col-12">
+                <h4>К сожалению задан пустой поисковый запрос. Попробуйте снова.</h4>
+            </div>
+        {% elif not query %}
+            <div class="col-12">
+                <h4>К сожалению в системе ещё нет объектов.</h4>
+            </div>
         {% else %}
             <div class="col-12">
-                <h4>К сожалению, по запроу "{{ query }}" ничего не найдено. Попробуйте снова.</h4>
+                <h4>К сожалению, по запроcу "{{ query }}" ничего не найдено. Попробуйте снова.</h4>
             </div>
         {% endif %}
         </div>

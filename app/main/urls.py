@@ -14,6 +14,7 @@ urlpatterns = [
     re_path('course/(?P<pk>\d+)', views.CourseDetail.as_view(), name="course"),
     path('favorite/', views.Favorites.as_view(), name="favorites"),
     path('load/', views.FileUpload.as_view(), name="upload"),
+    path('all/', views.AllFiles.as_view(), name='all-files'),
 
     re_path('favorites/remove/(?P<document_id>\d+)/', views.FavoritesRemove.as_view(), name='favorites-remove'),
     re_path('favorites/add/(?P<document_id>\d+)/', views.FavoritesAdd.as_view(), name='favorites-add'),
