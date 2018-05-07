@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load staticfiles %}
+{% load staticfiles app_extra %}
 {% block content %}
 
     <div class="container bott">
@@ -13,6 +13,8 @@
             </div>
         </div>
     </div>
+
+    {% type_choice %}
 
     <div class="container">
         <div class="row">

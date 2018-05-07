@@ -1,0 +1,26 @@
+<div class="container input-group search">
+    <form action="{{ request.get_full_path }}" id="typeChoiceForm" method="get">
+        <label class="control-label col-xs-3" for="typeChoice">Тип файла</label>
+        <select name="typeFilter" class="custom-select" id="typeChoice">
+            <option value="">---------</option>
+            {% for type in type_choices %}
+            <option value="{{ type.id }}"{% if current == type.id %} selected{% endif %}>{{ type.title }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+<script>
+  var addParam = function( url, key, value )
+  {
+    var url = new URL(url);
+
+    // If your expected result is "http://foo.bar/?x=42&y=2"
+    url.searchParams.set(key, value);
+
+    return url.href;
+  };
+
+  $("#typeChoice").change(function(){
+      window.location.href = addParam(window.location.href, 'typeFilter', $("#typeChoice").val())
+  });
+</script>

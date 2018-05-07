@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% load staticfiles %}
+{% load staticfiles app_extra %}
 {% block content %}
 
     {% include 'inc/search.html' %}
+    {% type_choice %}
 
     <div class="container bott">
         <div class="row">

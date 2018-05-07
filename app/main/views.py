@@ -90,9 +90,12 @@ class Search(LoginRequired, ListView):
     queryset = Document.objects
 
     def get_queryset(self):
-        if self.request.GET.get('q', ''):
-            return self.queryset.filter(title__contains=self.request.GET.get('q', ''))
-        return self.queryset.none()
+        if not self.request.GET.get('q', ''):
+            return self.queryset.none()
+        queryset = self.queryset.filter(title__contains=self.request.GET.get('q', ''))
+        if self.request.GET.get('typeFilter'):
+            extra_filter = {'type': self.request.GET['typeFilter']}
+        return queryset.filter(**extra_filter)
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         data = super().get_context_data(object_list=object_list, **kwargs)
@@ -101,7 +104,7 @@ class Search(LoginRequired, ListView):
         return data
 
 
-class AllFiles(LoginRequired, ListView):
+class AllFiles(Search):
     template_name = 'search.html'
     queryset = Document.objects.all()
 
@@ -127,9 +130,12 @@ class CourseDetail(LoginRequired, DetailView):
     queryset = Course.objects
 
     def get_context_data(self, **kwargs):
+        extra_filter = {}
+        if self.request.GET.get('typeFilter'):
+            extra_filter = {'type': self.request.GET['typeFilter']}
         return {
             'object': self.object,
-            'document_list': Document.objects.filter(course=self.object),
+            'document_list': Document.objects.filter(course=self.object, **extra_filter),
             'title': "Файлы факультета {}".format(self.object)
         }
 
