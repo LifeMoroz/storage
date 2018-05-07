@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import TemplateView, DetailView, ListView
 
-from app.main.forms import SignUpForm, SignInForm, FileUploadForm
+from app.main.forms import SignUpForm, SignInForm, FileUploadForm, DepartmentForm, SpecializationForm, CourseForm
 from app.main.models import Department, Document, Course
 
 
@@ -176,8 +176,10 @@ class FavoritesAdd(View):
         return JsonResponse({}, status=200)
 
 
-class FileUpload(TemplateView):
-    template_name = 'load.html'
+class AddView(TemplateView):
+    template_name = 'add.html'
+    form = None
+    success_action_text = 'добавлен'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated or request.user.groups.first().name != 'Преподаватели':
@@ -185,7 +187,30 @@ class FileUpload(TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        return {'form': FileUploadForm()}
+        return {
+            'form': self.form(),
+            'action': self.request.path,
+            'submit_text': 'Добавить',
+            'title': 'Добавить "{}"'.format(self.form.Meta.model._meta.verbose_name)
+        }
+
+    def post(self, request):
+        form = self.form(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return self.render_to_response({
+                'form': form,
+                'action': self.request.path,
+                'submit_text': 'Добавить',
+                'success': "{} {}".format(self.form.Meta.model._meta.verbose_name, self.success_action_text),
+                'title': 'Добавить "{}"'.format(self.form.Meta.model._meta.verbose_name)
+            })
+        return self.render_to_response({'form': form})
+
+
+class FileUpload(AddView):
+    template_name = 'load.html'
+    form = FileUploadForm
 
     def post(self, request):
         form = FileUploadForm(request.POST, request.FILES)
@@ -195,3 +220,25 @@ class FileUpload(TemplateView):
             doc.save()
             return self.render_to_response({'form': form, 'success': True})
         return self.render_to_response({'form': form})
+
+
+class Add(AddView):
+    template_name = 'add_choice.html'
+
+    def get_context_data(self, **kwargs):
+        return {
+            'action': self.request.path,
+            'title': 'Добавить'
+        }
+
+
+class AddDepartment(AddView):
+    form = DepartmentForm
+
+
+class AddSpecialization(AddView):
+    form = SpecializationForm
+
+
+class AddCourse(AddView):
+    form = CourseForm

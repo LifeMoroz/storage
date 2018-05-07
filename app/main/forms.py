@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ImproperlyConfigured
 
 from app.main.constants import Position
-from app.main.models import Document, Course, Type
+from app.main.models import Document, Course, Type, Department, Specialization
 
 
 class SignUpForm(UserCreationForm):
@@ -87,3 +87,46 @@ class FileUploadForm(forms.ModelForm):
     class Meta:
         model = Document
         exclude = ('users', 'author')
+
+
+class DepartmentForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Название файла',
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
+    )
+
+    class Meta:
+        model = Department
+        fields = '__all__'
+
+
+class SpecializationForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Название файла',
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
+    )
+    department = forms.ModelChoiceField(
+        queryset=Department.objects.all(),
+        label='Факультет',
+        widget=forms.widgets.Select(attrs={'class': 'custom-select'})
+    )
+
+    class Meta:
+        model = Specialization
+        fields = '__all__'
+
+
+class CourseForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Название файла',
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
+    )
+    specialization = forms.ModelChoiceField(
+        queryset=Specialization.objects.all(),
+        label='Кафедра',
+        widget=forms.widgets.Select(attrs={'class': 'custom-select'})
+    )
+
+    class Meta:
+        model = Course
+        fields = '__all__'

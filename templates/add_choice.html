@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+    <body>
+        <!-- Карточка предмета -->
+        <div class="container">
+            <br />
+            <div class="row">
+            <h2>Добавить:</h2>
+            </div>
+            <br />
+            <div class="row">
+                <a href="{% url 'main:add-department' %}"><h3>Факультет</h3></a>
+            </div>
+            <br />
+            <div class="row">
+                <a href="{% url 'main:add-specialization' %}"><h3>Кафедру</h3></a>
+            </div>
+            <br />
+            <div class="row">
+                <a href="{% url 'main:add-course' %}"><h3>Дисциплину</h3></a>
+            </div>
+        </div>
+    </body>
+{% endblock %}
