@@ -2,7 +2,7 @@
     <form action="{{ request.get_full_path }}" id="typeChoiceForm" method="get">
         <label class="control-label col-xs-3" for="typeChoice">Тип файла</label>
         <select name="typeFilter" class="custom-select" id="typeChoice">
-            <option value="">---------</option>
+            <option value="">Любой тип</option>
             {% for type in type_choices %}
             <option value="{{ type.id }}"{% if current == type.id %} selected{% endif %}>{{ type.title }}</option>
             {% endfor %}

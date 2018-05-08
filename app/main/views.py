@@ -7,7 +7,8 @@ from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import TemplateView, DetailView, ListView
 
-from app.main.forms import SignUpForm, SignInForm, FileUploadForm, DepartmentForm, SpecializationForm, CourseForm
+from app.main.forms import SignUpForm, SignInForm, FileUploadForm, DepartmentForm, SpecializationForm, CourseForm, \
+    FileTypeForm
 from app.main.models import Department, Document, Course
 
 
@@ -89,13 +90,17 @@ class Search(LoginRequired, ListView):
     template_name = 'search.html'
     queryset = Document.objects
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
         if not self.request.GET.get('q', ''):
             return self.queryset.none()
-        queryset = self.queryset.filter(title__contains=self.request.GET.get('q', ''))
+        return queryset.filter(title__contains=self.request.GET.get('q', ''))
+
+    def get_queryset(self):
+        qs = self.queryset
+        extra_filter = {}
         if self.request.GET.get('typeFilter'):
             extra_filter = {'type': self.request.GET['typeFilter']}
-        return queryset.filter(**extra_filter)
+        return self.filter_queryset(qs.filter(**extra_filter))
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         data = super().get_context_data(object_list=object_list, **kwargs)
@@ -108,8 +113,12 @@ class AllFiles(Search):
     template_name = 'search.html'
     queryset = Document.objects.all()
 
+    def filter_queryset(self, queryset):
+        return queryset
+
     def get_context_data(self, *args, object_list=None, **kwargs):
         data = super().get_context_data(object_list=object_list, **kwargs)
+        print(data['object_list'])
         data['title'] = "Все файлы"
         return data
 
@@ -120,7 +129,7 @@ class Storage(LoginRequired, DetailView):
 
     def get_context_data(self, **kwargs):
         return {
-            'specialization_list': self.object.specialization_set.all(),
+            'specialization_list': self.object.specialization_set.all().order_by('title'),
             'title': "Кафедры и предметы факультета {}".format(self.object)
         }
 
@@ -177,7 +186,7 @@ class FavoritesAdd(View):
 
 
 class AddView(TemplateView):
-    template_name = 'add.html'
+    template_name = 'add_choice.html'
     form = None
     success_action_text = 'добавлен'
 
@@ -188,48 +197,49 @@ class AddView(TemplateView):
 
     def get_context_data(self, **kwargs):
         return {
-            'form': self.form(),
             'action': self.request.path,
-            'submit_text': 'Добавить',
-            'title': 'Добавить "{}"'.format(self.form.Meta.model._meta.verbose_name)
+            'title': 'Добавить',
+            'dform': DepartmentForm(),
+            'sform': SpecializationForm(),
+            'cform': CourseForm(),
+            'tform': FileTypeForm(),
         }
 
     def post(self, request):
         form = self.form(request.POST, request.FILES)
+        context = self.get_context_data()
+        for key, value in context.items():
+            if isinstance(value, self.form):
+                form.active = True
+                context[key] = form
         if form.is_valid():
             form.save()
-            return self.render_to_response({
-                'form': form,
-                'action': self.request.path,
-                'submit_text': 'Добавить',
-                'success': "{} {}".format(self.form.Meta.model._meta.verbose_name, self.success_action_text),
-                'title': 'Добавить "{}"'.format(self.form.Meta.model._meta.verbose_name)
-            })
-        return self.render_to_response({'form': form})
+        return self.render_to_response(context)
 
 
-class FileUpload(AddView):
+class FileUpload(TemplateView):
     template_name = 'load.html'
     form = FileUploadForm
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or request.user.groups.first().name != 'Преподаватели':
+            return redirect('main:index')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        return {
+            'title': 'Загрузить файл',
+            'form': self.form
+        }
+
     def post(self, request):
-        form = FileUploadForm(request.POST, request.FILES)
+        form = self.form(request.POST, request.FILES)
         if form.is_valid():
             doc = form.save(False)
             doc.author = request.user
             doc.save()
             return self.render_to_response({'form': form, 'success': True})
         return self.render_to_response({'form': form})
-
-
-class Add(AddView):
-    template_name = 'add_choice.html'
-
-    def get_context_data(self, **kwargs):
-        return {
-            'action': self.request.path,
-            'title': 'Добавить'
-        }
 
 
 class AddDepartment(AddView):
@@ -242,3 +252,7 @@ class AddSpecialization(AddView):
 
 class AddCourse(AddView):
     form = CourseForm
+
+
+class AddFileType(AddView):
+    form = FileTypeForm

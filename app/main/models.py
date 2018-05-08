@@ -21,7 +21,6 @@ class Department(models.Model):
 
 class Specialization(models.Model):
     title = models.CharField('Название', max_length=255)
-    image = models.ImageField('Картинка', null=True, blank=True)
     department = models.ForeignKey(Department, models.CASCADE, verbose_name='Факультет')
 
     class Meta:
@@ -35,11 +34,10 @@ class Specialization(models.Model):
 class Course(models.Model):
     title = models.CharField('Название', max_length=255)
     specialization = models.ForeignKey(Specialization, models.CASCADE, verbose_name='Кафедра')
-    image = models.ImageField('Картинка', null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Предмет'
-        verbose_name_plural = 'Предметы'
+        verbose_name = 'Учебная дисциплина'
+        verbose_name_plural = 'Учебные дисциплины'
 
     def __str__(self):
         return "{}/{}".format(self.specialization, self.title)
@@ -71,5 +69,5 @@ class Document(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = 'Документ'
-        verbose_name_plural = 'Документы'
+        verbose_name = 'Файл'
+        verbose_name_plural = 'Файлы'

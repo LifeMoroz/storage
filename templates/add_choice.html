@@ -1,25 +1,77 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block content %}
-    <body>
-        <!-- Карточка предмета -->
-        <div class="container">
-            <br />
-            <div class="row">
-            <h2>Добавить:</h2>
-            </div>
-            <br />
-            <div class="row">
-                <a href="{% url 'main:add-department' %}"><h3>Факультет</h3></a>
-            </div>
-            <br />
-            <div class="row">
-                <a href="{% url 'main:add-specialization' %}"><h3>Кафедру</h3></a>
-            </div>
-            <br />
-            <div class="row">
-                <a href="{% url 'main:add-course' %}"><h3>Дисциплину</h3></a>
+    <script>
+    function show_form(form) {
+        $(".collapse").hide();
+        $(form).show();
+        $('.success').hide();
+    }
+    </script>
+    <body class="bg-white">
+    <div class="container">
+        <br><br>
+        <p>
+            <button class="btn btn-outline-primary" type="button" onclick="show_form('#addDepartment')">
+                Добавить факультет
+            </button>
+            <button class="btn btn-outline-primary" type="button" onclick="show_form('#addSpecialization')">
+                Добавить кафедру
+            </button>
+            <button class="btn btn-outline-primary" type="button" onclick="show_form('#addCourse')">
+                Добавить учебную дисципину
+            </button>
+            <button class="btn btn-outline-primary" type="button" onclick="show_form('#addFileType')">
+                Добавить тип файла
+            </button>
+        </p>
+        <div class="collapse{% if cform.active %} show{% endif %}" id="addCourse">
+            <div class="card card-login mx-auto mt-5">
+                <div class="card-header">Добавление Учебной дисциплины</div>
+                <div class="card-body">
+                    {% with form=cform %}
+                        {% include 'inc/form.html' %}
+                    {% endwith %}
+                </div>
             </div>
         </div>
+
+        <div class="collapse{% if sform.active %} show{% endif %}" id="addSpecialization">
+            <div class="card card-login mx-auto mt-5">
+                <div class="card-header">Добавление Кафедры</div>
+                <div class="card-body">
+                    {% with form=sform %}
+                        {% include 'inc/form.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse{% if dform.active %} show{% endif %}" id="addDepartment">
+            <div class="card card-login mx-auto mt-5">
+                <div class="card-header">Добавление Факультета</div>
+                <div class="card-body">
+                    {% with form=dform %}
+                        {% include 'inc/form.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse{% if tform.active %} show{% endif %}" id="addFileType">
+            <div class="card card-login mx-auto mt-5">
+                <div class="card-header">Добавление Типа файла</div>
+                <div class="card-body">
+                    {% with form=tform %}
+                        {% include 'inc/form.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
     </body>
+
 {% endblock %}

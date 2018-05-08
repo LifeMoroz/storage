@@ -15,10 +15,11 @@ urlpatterns = [
     path('favorite/', views.Favorites.as_view(), name="favorites"),
     path('load/', views.FileUpload.as_view(), name="upload"),
     path('all/', views.AllFiles.as_view(), name='all-files'),
-    path('add/', views.Add.as_view(), name='add'),
+    path('add/', views.AddView.as_view(), name='add'),
     path('add_department/', views.AddDepartment.as_view(), name='add-department'),
     path('add_specialization/', views.AddSpecialization.as_view(), name='add-specialization'),
     path('add_course/', views.AddCourse.as_view(), name='add-course'),
+    path('add_file_type/', views.AddFileType.as_view(), name='add-file-type'),
 
     re_path('favorites/remove/(?P<document_id>\d+)/', views.FavoritesRemove.as_view(), name='favorites-remove'),
     re_path('favorites/add/(?P<document_id>\d+)/', views.FavoritesAdd.as_view(), name='favorites-add'),

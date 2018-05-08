@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ImproperlyConfigured
+from django.urls import reverse
+from django.utils.functional import SimpleLazyObject
 
 from app.main.constants import Position
 from app.main.models import Document, Course, Type, Department, Specialization
@@ -90,19 +92,23 @@ class FileUploadForm(forms.ModelForm):
 
 
 class DepartmentForm(forms.ModelForm):
+
     title = forms.CharField(
-        label='Название файла',
+        label='Название факультета',
         widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
     )
 
     class Meta:
         model = Department
-        fields = '__all__'
+        fields = ('title', 'image')
+        action = 'main:add-department'
+        success_action_text = '{} добавлен'.format(model._meta.verbose_name)
 
 
 class SpecializationForm(forms.ModelForm):
+
     title = forms.CharField(
-        label='Название файла',
+        label='Название кафедры',
         widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
     )
     department = forms.ModelChoiceField(
@@ -113,12 +119,15 @@ class SpecializationForm(forms.ModelForm):
 
     class Meta:
         model = Specialization
-        fields = '__all__'
+        fields = ('title', 'department')
+        action = 'main:add-specialization'
+        success_action_text = '{} добавлена'.format(model._meta.verbose_name)
 
 
 class CourseForm(forms.ModelForm):
+
     title = forms.CharField(
-        label='Название файла',
+        label='Название учебной дисциплины',
         widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
     )
     specialization = forms.ModelChoiceField(
@@ -129,4 +138,20 @@ class CourseForm(forms.ModelForm):
 
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ('title', 'specialization')
+        action = 'main:add-course'
+        success_action_text = '{} добавлена'.format(model._meta.verbose_name)
+
+
+class FileTypeForm(forms.ModelForm):
+
+    title = forms.CharField(
+        label='Название типа файла',
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
+    )
+
+    class Meta:
+        model = Type
+        fields = ('title',)
+        action = 'main:add-file-type'
+        success_action_text = '{} добавлен'.format(model._meta.verbose_name)
