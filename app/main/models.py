@@ -26,6 +26,7 @@ class Specialization(models.Model):
     class Meta:
         verbose_name = 'Кафедра'
         verbose_name_plural = 'Кафедра'
+        ordering = ('title',)
 
     def __str__(self):
         return self.title
@@ -38,6 +39,7 @@ class Course(models.Model):
     class Meta:
         verbose_name = 'Учебная дисциплина'
         verbose_name_plural = 'Учебные дисциплины'
+        ordering = ('title',)
 
     def __str__(self):
         return "{}/{}".format(self.specialization, self.title)
@@ -52,6 +54,7 @@ class Type(models.Model):
     class Meta:
         verbose_name = 'Тип файла'
         verbose_name_plural = 'Типы файлов'
+        ordering = ('title',)
 
 
 class Document(models.Model):
@@ -71,3 +74,4 @@ class Document(models.Model):
     class Meta:
         verbose_name = 'Файл'
         verbose_name_plural = 'Файлы'
+        ordering = ('title',)

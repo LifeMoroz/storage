@@ -118,7 +118,7 @@ class AllFiles(Search):
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         data = super().get_context_data(object_list=object_list, **kwargs)
-        print(data['object_list'])
+        data['query'] = None
         data['title'] = "Все файлы"
         return data
 
