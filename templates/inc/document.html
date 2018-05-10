@@ -8,8 +8,8 @@
             <p>Тип Файла: {{ object.type.title }}</p>
             <p>Источник: {{ object.author.get_full_name }}</p>
             <p>Дата добавления:&nbsp;{{ object.created|date:"SHORT_DATE_FORMAT" }}</p>
-            <a href="#" class="btn btn-outline-danger favorites-remove"{% if object not in request.user.favorites.all %} style="display: none"{% endif %} onclick="$.get('{% url 'main:favorites-remove' object.id %}'); toggle_favorite(this);">Удалить из &star;</a>
-            <a href="#" class="btn btn-outline-warning favorites-add"{% if object in request.user.favorites.all %} style="display: none"{% endif %} onclick="$.get('{% url 'main:favorites-add' object.id %}'); toggle_favorite(this);">Добавить в &star;</a>
+            <a class="btn btn-outline-danger favorites-remove"{% if object not in request.user.favorites.all %} style="display: none"{% endif %} onclick="$.get('{% url 'main:favorites-remove' object.id %}'); toggle_favorite(this);">Удалить из &star;</a>
+            <a class="btn btn-outline-warning favorites-add"{% if object in request.user.favorites.all %} style="display: none"{% endif %} onclick="$.get('{% url 'main:favorites-add' object.id %}'); toggle_favorite(this);">Добавить в &star;</a>
             <br><br>
             <a href="{{ object.file.url }}" class="btn btn-outline-primary" download>Скачать</a>
         </div>
