@@ -21,6 +21,9 @@
             <button class="btn btn-outline-primary" type="button" onclick="show_form('#addCourse')">
                 Добавить учебную дисципину
             </button>
+            <button class="btn btn-outline-primary" type="button" onclick="show_form('#addCourseDiscipline')">
+                Добавить учебный блок
+            </button>
             <button class="btn btn-outline-primary" type="button" onclick="show_form('#addFileType')">
                 Добавить тип файла
             </button>
@@ -63,6 +66,17 @@
                 <div class="card-header">Добавление Типа файла</div>
                 <div class="card-body">
                     {% with form=tform %}
+                        {% include 'inc/form.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse{% if cdform.active %} show{% endif %}" id="addCourseDiscipline">
+            <div class="card card-login mx-auto mt-5">
+                <div class="card-header">Добавление Учебного блока</div>
+                <div class="card-body">
+                    {% with form=cdform %}
                         {% include 'inc/form.html' %}
                     {% endwith %}
                 </div>

@@ -3,9 +3,11 @@
         <div class="card-header">
             <h6 class="document-title">{{ object.title }}</h6>
         </div>
-        <div class="card-body">
-            <p class="card-text">{{ object.course }}</p>
+        <div class="card-body disc{{ object.course_discipline.id }}">
+            <p class="card-text">{{ object.course_discipline }}</p>
             <p>Тип Файла: {{ object.type.title }}</p>
+            <p>Размер: {{ object.size }} КБ</p>
+            <p>Расширение: {{ object.extension }}</p>
             <p>Источник: {{ object.author.get_full_name }}</p>
             <p>Дата добавления:&nbsp;{{ object.created|date:"SHORT_DATE_FORMAT" }}</p>
             <a class="btn btn-outline-danger favorites-remove"{% if object not in request.user.favorites.all %} style="display: none"{% endif %} onclick="$.get('{% url 'main:favorites-remove' object.id %}'); toggle_favorite(this);">Удалить из &star;</a>

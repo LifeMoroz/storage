@@ -1,5 +1,6 @@
 <div class="container input-group search">
     <form action="{{ request.get_full_path }}" id="typeChoiceForm" method="get">
+        <div style="display: inline-block">
         <label class="control-label col-xs-3" for="typeChoice">Тип файла</label>
         <select name="typeFilter" class="custom-select" id="typeChoice">
             <option value="">Любой тип</option>
@@ -7,6 +8,22 @@
             <option value="{{ type.id }}"{% if current == type.id %} selected{% endif %}>{{ type.title }}</option>
             {% endfor %}
         </select>
+        </div>
+        {% if block_choices %}
+        <div style="display: inline-block">
+        <label class="control-label col-xs-3" for="blockChoice">Учебный блок</label>
+        <select name="blockFilter" class="custom-select" id="blockChoice">
+            <option value="">Любой тип</option>
+            {% for type in block_choices %}
+            <option value="{{ type.id }}"{% if current_block == type.id %} selected{% endif %}>{{ type.title }}</option>
+            {% endfor %}
+        </select>
+        </div>
+        <div style="display: inline-block">
+        <a class="btn btn-outline-warning favorites-add" onclick="$.get('{% url 'main:favorites-add-discipline' %}?disc_id=' + $('#blockChoice').val()); $('.disc' + $('#blockChoice').val()).map(updateEl)">Добавить блок в &star; </a>
+        </div>
+
+        {% endif %}
     </form>
 </div>
 <script>
@@ -23,4 +40,16 @@
   $("#typeChoice").change(function(){
       window.location.href = addParam(window.location.href, 'typeFilter', $("#typeChoice").val())
   });
+  $("#blockChoice").change(function(){
+      window.location.href = addParam(window.location.href, 'blockFilter', $("#blockChoice").val())
+  });
+
+  var updateEl = function (i, parent) {
+      parent = $(parent);
+    var addEl = parent.children('.favorites-add');
+    var removeEl = parent.children('.favorites-remove');
+    addEl.hide();
+    removeEl.show();
+  }
 </script>
+9023926775

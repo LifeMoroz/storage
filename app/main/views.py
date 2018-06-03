@@ -8,7 +8,7 @@ from django.views import View
 from django.views.generic import TemplateView, DetailView, ListView
 
 from app.main.forms import SignUpForm, SignInForm, FileUploadForm, DepartmentForm, SpecializationForm, CourseForm, \
-    FileTypeForm
+    FileTypeForm, CourseDisciplineForm
 from app.main.models import Department, Document, Course
 
 
@@ -99,7 +99,10 @@ class Search(LoginRequired, ListView):
         qs = self.queryset
         extra_filter = {}
         if self.request.GET.get('typeFilter'):
-            extra_filter = {'type': self.request.GET['typeFilter']}
+            extra_filter['type'] = self.request.GET['typeFilter']
+
+        if self.request.GET.get('blockFilter'):
+            extra_filter['course_discipline'] = self.request.GET['blockFilter']
         return self.filter_queryset(qs.filter(**extra_filter))
 
     def get_context_data(self, *args, object_list=None, **kwargs):
@@ -141,10 +144,14 @@ class CourseDetail(LoginRequired, DetailView):
     def get_context_data(self, **kwargs):
         extra_filter = {}
         if self.request.GET.get('typeFilter'):
-            extra_filter = {'type': self.request.GET['typeFilter']}
+            extra_filter['type'] = self.request.GET['typeFilter']
+
+        if self.request.GET.get('blockFilter'):
+            extra_filter['course_discipline'] = self.request.GET['blockFilter']
         return {
             'object': self.object,
-            'document_list': Document.objects.filter(course=self.object, **extra_filter),
+            'course': self.object,
+            'document_list': Document.objects.filter(course_discipline__course=self.object, **extra_filter),
             'title': "Файлы факультета {}".format(self.object)
         }
 
@@ -185,6 +192,17 @@ class FavoritesAdd(View):
         return JsonResponse({}, status=200)
 
 
+class FavoritesAddDiscipline(View):
+    def get(self, request):
+        disc_id = self.request.GET['disc_id']
+        if not request.user.is_authenticated or not disc_id:
+            return HttpResponseForbidden()
+        documents = Document.objects.filter(course_discipline__id=disc_id)
+        for d in documents:
+            request.user.favorites.add(d)
+        return JsonResponse({}, status=200)
+
+
 class AddView(TemplateView):
     template_name = 'add_choice.html'
     form = None
@@ -203,6 +221,7 @@ class AddView(TemplateView):
             'sform': SpecializationForm(),
             'cform': CourseForm(),
             'tform': FileTypeForm(),
+            'cdform': CourseDisciplineForm(),
         }
 
     def post(self, request):
@@ -252,6 +271,10 @@ class AddSpecialization(AddView):
 
 class AddCourse(AddView):
     form = CourseForm
+
+
+class AddCourseDiscipline(AddView):
+    form = CourseDisciplineForm
 
 
 class AddFileType(AddView):

@@ -57,21 +57,50 @@ class Type(models.Model):
         ordering = ('title',)
 
 
+class CourseDiscipline(models.Model):
+    title = models.CharField('Название', max_length=255)
+    course = models.ForeignKey(Course, models.CASCADE)
+
+    def __str__(self):
+        return str(self.course) + ' - ' + str(self.title)
+
+    class Meta:
+        verbose_name = 'Учебный блок'
+        verbose_name_plural = 'Файлы'
+        ordering = ('course__title', 'title',)
+
+
 class Document(models.Model):
     title = models.CharField('Название', max_length=255)
     file = models.FileField(verbose_name='Файл')
-    # TYPE_CHOICES = ((1, 'Шаблон работы'), (2, 'Методичекие указания'), (3, 'Видеофайл'), (4, 'Домашнее задание'))
-    # type = models.IntegerField(verbose_name='Тип файла', choices=TYPE_CHOICES)
     type = models.ForeignKey(Type, models.CASCADE, verbose_name='Тип файла')
     author = models.ForeignKey(User, models.CASCADE, verbose_name='Автор')
-    course = models.ForeignKey(Course, models.CASCADE, verbose_name='Предмет')
+    course_discipline = models.ForeignKey(CourseDiscipline, models.CASCADE, verbose_name='Предмет', null=True)
     created = models.DateTimeField(verbose_name='Создано', default=timezone.now, editable=False)
     users = models.ManyToManyField(User, related_name='favorites')
 
     def __str__(self):
         return self.title
 
+    @property
+    def course(self):
+        if self.course_discipline:
+            return self.course_discipline.course
+        return None
+
+    @property
+    def size(self):
+        if self.file:
+            return round(self.file.size * 1. / 1000, 1)
+        return '-'
+
+    @property
+    def extension(self):
+        if self.file:
+            return self.file.path.split('.')[-1]
+        return '-'
+
     class Meta:
         verbose_name = 'Файл'
         verbose_name_plural = 'Файлы'
-        ordering = ('title',)
+        ordering = ('course_discipline__title', 'title',)

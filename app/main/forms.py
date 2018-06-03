@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.functional import SimpleLazyObject
 
 from app.main.constants import Position
-from app.main.models import Document, Course, Type, Department, Specialization
+from app.main.models import Document, Course, Type, Department, Specialization, CourseDiscipline
 
 
 class SignUpForm(UserCreationForm):
@@ -80,9 +80,9 @@ class FileUploadForm(forms.ModelForm):
         label='Тип файла',
         widget=forms.widgets.Select(attrs={'class': 'custom-select'}),
     )
-    course = forms.ModelChoiceField(
-        queryset=Course.objects.all(),
-        label='Предмет',
+    course_discipline = forms.ModelChoiceField(
+        queryset=CourseDiscipline.objects.all(),
+        label='Учебный блок',
         widget=forms.widgets.Select(attrs={'class': 'custom-select'})
     )
 
@@ -141,6 +141,25 @@ class CourseForm(forms.ModelForm):
         fields = ('title', 'specialization')
         action = 'main:add-course'
         success_action_text = '{} добавлена'.format(model._meta.verbose_name)
+
+
+class CourseDisciplineForm(forms.ModelForm):
+
+    title = forms.CharField(
+        label='Название учебного блока',
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Введите название'}),
+    )
+    course = forms.ModelChoiceField(
+        queryset=Course.objects.all(),
+        label='Учебная дисциплина',
+        widget=forms.widgets.Select(attrs={'class': 'custom-select'})
+    )
+
+    class Meta:
+        model = CourseDiscipline
+        fields = ('title', 'course')
+        action = 'main:add-course-discipline'
+        success_action_text = '{} добавлен'.format(model._meta.verbose_name)
 
 
 class FileTypeForm(forms.ModelForm):

@@ -19,8 +19,10 @@ urlpatterns = [
     path('add_department/', views.AddDepartment.as_view(), name='add-department'),
     path('add_specialization/', views.AddSpecialization.as_view(), name='add-specialization'),
     path('add_course/', views.AddCourse.as_view(), name='add-course'),
+    path('add_course_discipline/', views.AddCourseDiscipline.as_view(), name='add-course-discipline'),
     path('add_file_type/', views.AddFileType.as_view(), name='add-file-type'),
 
     re_path('favorites/remove/(?P<document_id>\d+)/', views.FavoritesRemove.as_view(), name='favorites-remove'),
     re_path('favorites/add/(?P<document_id>\d+)/', views.FavoritesAdd.as_view(), name='favorites-add'),
+    re_path('favorites/add-discipline/', views.FavoritesAddDiscipline.as_view(), name='favorites-add-discipline'),
 ]
