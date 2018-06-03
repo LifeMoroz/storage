@@ -12,6 +12,6 @@ def type_choice(context):
     return {
         'type_choices': Type.objects.all(),
         'current': int(current_type) if current_type else None,
-        'block_choices': CourseDiscipline.objects.filter(course=context['course']) if context['course'] else None,
+        'block_choices': CourseDiscipline.objects.filter(course=context['course']) if context.get('course') else None,
         'current_block': int(current_block) if current_block else None
     }
