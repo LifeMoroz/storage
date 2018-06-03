@@ -66,7 +66,7 @@ class CourseDiscipline(models.Model):
 
     class Meta:
         verbose_name = 'Учебный блок'
-        verbose_name_plural = 'Файлы'
+        verbose_name_plural = 'Учебные блоки'
         ordering = ('course__title', 'title',)
 
 
